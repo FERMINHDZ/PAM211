@@ -75,11 +75,11 @@ class PorcentajesporParcial {
         porcentajes = new ArrayList<>();
 
         // Septiembre
-        porcentajes.add("Septiembre → Conocimiento 40%, Desempeño 20%, Producto 30%, Proyecto 10%");
+        porcentajes.add("Septiembre -> Conocimiento 40%, Desempeño 20%, Producto 30%, Proyecto 10%");
         // Octubre
-        porcentajes.add("Octubre → Conocimiento 40%, Desempeño 20%, Producto 20%, Proyecto 20%");
+        porcentajes.add("Octubre -> Conocimiento 40%, Desempeño 20%, Producto 20%, Proyecto 20%");
         // Noviembre
-        porcentajes.add("Noviembre → Conocimiento 20%, Desempeño 10%, Producto 40%, Proyecto 30%");
+        porcentajes.add("Noviembre -> Conocimiento 20%, Desempeño 10%, Producto 40%, Proyecto 30%");
     }
 
     public void mostrarInformacion() {
