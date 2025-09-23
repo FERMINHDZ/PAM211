@@ -5,12 +5,8 @@ const productos = [
   { nombre: "Monitor", precio: 3000 }
 ];
 
-const productosmascaros = productos.some(productos => productos.precio > 1000);
-
-console.log(productosmascaros);
-
-const nombre = productos
-  .filter(producto => producto.precio > 1000) // filtra los caros
+const nombres = productos
+  .filter(producto => producto.precio > 1000)
   .map(producto => producto.nombre);  
-  
+
 console.log(nombres); // ["Laptop", "Monitor"]
