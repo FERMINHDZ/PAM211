@@ -25,6 +25,9 @@ export default function ContadorScreen() {
   );
 }
 
+
+
+
 //3. Zona de estilos
 const styles = StyleSheet.create({
   container: {
