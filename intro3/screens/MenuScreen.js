@@ -1,11 +1,12 @@
-//1. Zona importaciones
-import { Text, StyleSheet, View, Button, TouchableOpacity } from 'react-native';
+// 1. Zona importaciones
+import { Text, StyleSheet, View, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
 import BotonesScreen from './BotonesScreen';
 import ContadorScreen from './ContadorScreen';
+import ScrollvierScreen from './ScrollvierScreen';
 import TextImput from './TextImput';
 
-//2. Zona de main o componentes
+// 2. Zona de main o componentes
 export default function MenuScreen() {
   const [screen, setScreen] = useState('menu');
 
@@ -14,16 +15,18 @@ export default function MenuScreen() {
       return <ContadorScreen />;
     case 'botones':
       return <BotonesScreen />;
+    case 'scrollview':
+      return <ScrollvierScreen />;
     case 'textimput':
       return <TextImput />;
     case 'menu':
     default:
       return (
         <View style={styles.container}>
-          {/*  Título principal */}
+          {/* Título principal */}
           <Text style={styles.titulo}>Menú de Prácticas</Text>
 
-          {/*  Contenedor de botones */}
+          {/* Contenedor de botones */}
           <View style={styles.botonesContainer}>
             {/* Botón 1 */}
             <TouchableOpacity
@@ -41,12 +44,20 @@ export default function MenuScreen() {
               <Text style={styles.textoBoton}>Pract: Botones</Text>
             </TouchableOpacity>
 
-            {/* Botón 3 (nuevo) */}
+            {/* Botón 3 */}
             <TouchableOpacity
               style={[styles.boton, { backgroundColor: '#0055ffff' }]}
               onPress={() => setScreen('textimput')}
             >
-              <Text style={styles.textoBoton}>Pract: TextImput</Text>
+              <Text style={styles.textoBoton}>Pract: TextInput</Text>
+            </TouchableOpacity>
+
+            {/* Botón 4 */}
+            <TouchableOpacity
+              style={[styles.boton, { backgroundColor: '#c11befff' }]}
+              onPress={() => setScreen('scrollview')}
+            >
+              <Text style={styles.textoBoton}>Pract: ScrollView</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -54,7 +65,7 @@ export default function MenuScreen() {
   }
 }
 
-//3. Zona de estilos
+// 3. Zona de estilos
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -81,9 +92,9 @@ const styles = StyleSheet.create({
 
   botonesContainer: {
     width: '80%',
-    flexDirection: 'column',
+    flexDirection: 'column', // Los botones se colocan verticalmente
     alignItems: 'center',
-    gap: 20,
+    gap: 20, // Espacio entre cada botón
   },
 
   boton: {
