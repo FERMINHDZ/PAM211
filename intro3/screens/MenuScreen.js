@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import BotonesScreen from './BotonesScreen';
 import ContadorScreen from './ContadorScreen';
 import ScrollvierScreen from './ScrollvierScreen';
-import TextImput from './TextImput';
+import TextImput from './TextimputScreen';
 
 // 2. Zona de main o componentes
 export default function MenuScreen() {
