@@ -1,17 +1,14 @@
-import { Text, StyleSheet, View, TouchableOpacity, Switch } from 'react-native';
+import { Text, StyleSheet, View, TouchableOpacity, Switch } from 'react-native';//importamos 
 import React, { useState } from 'react';
 
 export default function BotonesScreen() {
   const [prendido, setPrendido] = useState(false);
-  const backgroundColor = prendido ? '#F5F5F5' : '#121212'; 
-  const textColor = prendido ? '#000' : '#FFF'; 
+  const backgroundColor = prendido ? '#F5F5F5' : '#121212';
+  const textColor = prendido ? '#000' : '#FFF';
 
   return (
     <View style={[styles.container, {backgroundColor}]}>
-      
-      <Text style={[styles.texto, {color: textColor}]}>
-        Estado: {prendido ? 'Prendido' : 'Apagado'}
-      </Text>
+      <Text style={[styles.texto, {color: textColor}]}>Estado: {prendido ? 'Prendido' : 'Apagado'}</Text>
 
       <TouchableOpacity
         style={styles.botonEncendido}
@@ -25,6 +22,7 @@ export default function BotonesScreen() {
         <Text style={styles.textoBoton}>APAGAR</Text>
       </TouchableOpacity>
 
+      {/* Switch bien ubicado */}
       <View style={styles.switchContainer}>
         <Text style={[styles.switchLabel, {color: textColor}]}>Control de Switch:</Text>
         <Switch value={prendido} onValueChange={setPrendido} />
@@ -38,7 +36,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#B77272', // ⚠ Este valor se sobrescribe dinámicamente
+    backgroundColor: '#B77272',
   },
   texto: {
     fontSize: 22,
@@ -74,7 +72,7 @@ const styles = StyleSheet.create({
   switchLabel: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#fff', //  También se sobrescribe dinámicamente
+    color: '#fff',
     marginRight: 10,
   },
 });

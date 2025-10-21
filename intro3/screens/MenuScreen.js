@@ -4,7 +4,8 @@ import React, { useState } from 'react';
 import BotonesScreen from './BotonesScreen';
 import ContadorScreen from './ContadorScreen';
 import ScrollvierScreen from './ScrollvierScreen';
-import TextImput from './TextimputScreen';
+import TextimputScreen from './TextimputScreen';
+import ImageBackgroundScreen from './ImageBackgroundScreen';
 
 // 2. Zona de main o componentes
 export default function MenuScreen() {
@@ -15,10 +16,12 @@ export default function MenuScreen() {
       return <ContadorScreen />;
     case 'botones':
       return <BotonesScreen />;
+    case 'image':
+      return <ImageBackgroundScreen />;
     case 'scrollview':
       return <ScrollvierScreen />;
     case 'textimput':
-      return <TextImput />;
+      return <TextimputScreen />;
     case 'menu':
     default:
       return (
@@ -28,7 +31,6 @@ export default function MenuScreen() {
 
           {/* Contenedor de botones */}
           <View style={styles.botonesContainer}>
-            {/* Botón 1 */}
             <TouchableOpacity
               style={[styles.boton, { backgroundColor: '#10ffcfff' }]}
               onPress={() => setScreen('contador')}
@@ -36,7 +38,6 @@ export default function MenuScreen() {
               <Text style={styles.textoBoton}>Pract: Contador</Text>
             </TouchableOpacity>
 
-            {/* Botón 2 */}
             <TouchableOpacity
               style={[styles.boton, { backgroundColor: '#ff189fff' }]}
               onPress={() => setScreen('botones')}
@@ -44,7 +45,14 @@ export default function MenuScreen() {
               <Text style={styles.textoBoton}>Pract: Botones</Text>
             </TouchableOpacity>
 
-            {/* Botón 3 */}
+            <TouchableOpacity
+              style={[styles.boton, { backgroundColor: '#006195ff' }]}
+              onPress={() => setScreen('image')}
+            >
+              <Text style={styles.textoBoton}>Pract: ImageBackground</Text>
+            </TouchableOpacity>
+
+            {/* Nuevo botón de TextInput */}
             <TouchableOpacity
               style={[styles.boton, { backgroundColor: '#0055ffff' }]}
               onPress={() => setScreen('textimput')}
@@ -52,7 +60,6 @@ export default function MenuScreen() {
               <Text style={styles.textoBoton}>Pract: TextInput</Text>
             </TouchableOpacity>
 
-            {/* Botón 4 */}
             <TouchableOpacity
               style={[styles.boton, { backgroundColor: '#c11befff' }]}
               onPress={() => setScreen('scrollview')}
@@ -74,7 +81,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 20,
   },
-
   titulo: {
     color: '#1d8600ff',
     fontSize: 36,
@@ -83,20 +89,12 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
     marginBottom: 10,
   },
-
-  subtitulo: {
-    color: '#ffffffab',
-    fontSize: 18,
-    marginBottom: 40,
-  },
-
   botonesContainer: {
     width: '80%',
-    flexDirection: 'column', // Los botones se colocan verticalmente
+    flexDirection: 'column',
     alignItems: 'center',
-    gap: 20, // Espacio entre cada botón
+    gap: 20,
   },
-
   boton: {
     width: '100%',
     paddingVertical: 15,
@@ -107,10 +105,10 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     elevation: 5,
   },
-
   textoBoton: {
     color: '#ffffff',
     fontSize: 18,
     fontWeight: 'bold',
   },
 });
+
