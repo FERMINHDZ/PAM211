@@ -6,6 +6,9 @@ import ContadorScreen from './ContadorScreen';
 import ScrollvierScreen from './ScrollvierScreen';
 import TextimputScreen from './TextimputScreen';
 import ImageBackgroundScreen from './ImageBackgroundScreen';
+import ActivityIndicatorScreen from './ActivityIndicatorScreen';
+import FlatListScreen from './FlatListScreen';
+import ModalScreen from './ModalScreen';
 
 // 2. Zona de main o componentes
 export default function MenuScreen() {
@@ -22,14 +25,19 @@ export default function MenuScreen() {
       return <ScrollvierScreen />;
     case 'textimput':
       return <TextimputScreen />;
+    case 'ActivityIndicator':
+      return <ActivityIndicatorScreen />;
+    case 'FlatList':
+      return <FlatListScreen />;
+    case 'Modal':
+      return <ModalScreen />;
     case 'menu':
     default:
       return (
         <View style={styles.container}>
-          {/* Título principal */}
+          
           <Text style={styles.titulo}>Menú de Prácticas</Text>
 
-          {/* Contenedor de botones */}
           <View style={styles.botonesContainer}>
             <TouchableOpacity
               style={[styles.boton, { backgroundColor: '#10ffcfff' }]}
@@ -51,8 +59,7 @@ export default function MenuScreen() {
             >
               <Text style={styles.textoBoton}>Pract: ImageBackground</Text>
             </TouchableOpacity>
-
-            {/* Nuevo botón de TextInput */}
+            
             <TouchableOpacity
               style={[styles.boton, { backgroundColor: '#0055ffff' }]}
               onPress={() => setScreen('textimput')}
@@ -66,6 +73,28 @@ export default function MenuScreen() {
             >
               <Text style={styles.textoBoton}>Pract: ScrollView</Text>
             </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.boton, { backgroundColor: '#ca006cff' }]}
+              onPress={() => setScreen('ActivityIndicator')}
+            >
+              <Text style={styles.textoBoton}>Pract: ActivityIndicator</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.boton, { backgroundColor: '#058800ff' }]}
+              onPress={() => setScreen('FlatList')}
+            >
+              <Text style={styles.textoBoton}>Pract: FlatList</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.boton, { backgroundColor: '#e00202ff' }]}
+              onPress={() => setScreen('Modal')}
+            >
+              <Text style={styles.textoBoton}>Pract: Modal</Text>
+            </TouchableOpacity>
+
           </View>
         </View>
       );
@@ -76,7 +105,7 @@ export default function MenuScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#9fe711ff',
+    backgroundColor: '#ffd000ff',
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
@@ -111,4 +140,5 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
+
 
