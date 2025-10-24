@@ -1,11 +1,7 @@
-import { Text, StyleSheet, View } from 'react-native'
-import React, { Component } from 'react'
 //  Importaciones necesarias
 import {Text, StyleSheet, View, TextInput, Switch, Button, Alert, Platform, ImageBackground, Image, Dimensions } from "react-native"; // Importamos componentes base de React Native
 import React, { useEffect, useState } from "react"; // Importamos React y hooks
 
-export default class RepasoScreen extends Component {
-  render() {
 // Imágenes usadas
 const MainBackground = require("../assets/Gaia2.jpg"); // Imagen del fondo principal
 const SplashLogo = require("../assets/I_M.jpg");       // Imagen del splash
@@ -26,10 +22,6 @@ export default function RepasoScreen() {               // Declaramos el componen
   // Mostrar pantalla Splash si showSplash es true
   if (showSplash) {                                           // Si showSplash es verdadero, muestra el splash
     return (
-      <View>
-        <Text>RepasoScreen</Text>
-      </View>
-    )
       <ImageBackground
         source={SplashLogo}                           // Imagen que se muestra de fondo
         style={styles.splashContainer}                // Estilo del splash centrado
@@ -122,7 +114,7 @@ export default function RepasoScreen() {               // Declaramos el componen
   );
 }
 
-const styles = StyleSheet.create({})// Estilos
+// Estilos
 const { width, height } = Dimensions.get("window"); // Obtiene tamaño de pantalla
 
 const styles = StyleSheet.create({
