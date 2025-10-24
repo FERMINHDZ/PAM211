@@ -9,6 +9,7 @@ import ImageBackgroundScreen from './ImageBackgroundScreen';
 import ActivityIndicatorScreen from './ActivityIndicatorScreen';
 import FlatListScreen from './FlatListScreen';
 import ModalScreen from './ModalScreen';
+import RepasoScreen from './RepasoScreen';
 
 // 2. Zona de main o componentes
 export default function MenuScreen() {
@@ -31,6 +32,8 @@ export default function MenuScreen() {
       return <FlatListScreen />;
     case 'Modal':
       return <ModalScreen />;
+    case 'Repaso':
+      return <RepasoScreen />;
     case 'menu':
     default:
       return (
@@ -94,6 +97,14 @@ export default function MenuScreen() {
             >
               <Text style={styles.textoBoton}>Pract: Modal</Text>
             </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.boton, { backgroundColor: '#ff00d4ff' }]}
+              onPress={() => setScreen('Repaso')}
+            >
+              <Text style={styles.textoBoton}>Repaso 1</Text>
+            </TouchableOpacity>
+            
 
           </View>
         </View>
