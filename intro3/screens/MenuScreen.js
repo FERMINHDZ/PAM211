@@ -6,7 +6,7 @@ import ContadorScreen from './ContadorScreen';
 import ScrollvierScreen from './ScrollvierScreen';
 import TextimputScreen from './TextimputScreen';
 import ImageBackgroundScreen from './ImageBackgroundScreen';
-import ActivityIndicatorScreen from './ActivityIndicatorScreen';
+import ActivityScreen from './ActivityScreen';
 import FlatListScreen from './FlatListScreen';
 import ModalScreen from './ModalScreen';
 import RepasoScreen from './RepasoScreen';
@@ -27,7 +27,7 @@ export default function MenuScreen() {
     case 'textimput':
       return <TextimputScreen />;
     case 'ActivityIndicator':
-      return <ActivityIndicatorScreen />;
+      return <ActivityScreen />;
     case 'FlatList':
       return <FlatListScreen />;
     case 'Modal':
