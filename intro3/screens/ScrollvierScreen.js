@@ -4,8 +4,7 @@ import React, { Component } from 'react'
 // Importa la imagen para usar como fondo
 const GaiaBackground = require('../assets/Gaia2.jpg') //Ruta de la imagen de fondo
 
-export default class ScrollvierScreen extends Component {
-  render() {
+export default function ScrollvierScreen() {
     return (
       // Componente que muestra la imagen de fondo
       <ImageBackground 
@@ -79,7 +78,6 @@ export default class ScrollvierScreen extends Component {
         </View >
       </ImageBackground>
     )
-  }
 }
 
 const styles = StyleSheet.create({
@@ -103,7 +101,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   item: {
-    backgroundColor: '#ff1900ff',
+    backgroundColor: '#ff0000ff',
     color: '#fff',
     padding: 12,
     marginVertical: 8,
