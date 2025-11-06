@@ -1,123 +1,87 @@
-// Importamos React y el hook useState (para guardar y actualizar valores)
 import React, { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet } from 'react-native';
 
-
-// Importamos los elementos visuales que se usarán
-// View → contenedor principal
-// Text → para mostrar texto
-// TextInput → para escribir texto
-// Button → botón simple
-// Alert → para mostrar alertas en celulares
-// Platform → detecta si la app corre en web, Android o iOS
-// StyleSheet → para los estilos
-import { View, Text, TextInput, Button, Alert, Platform, StyleSheet } from 'react-native';
-
-
-// Componente principal
-export default function TextInputScreen() {
-
-
-  // Creamos una variable "nombre" que guarda lo que el usuario escribe
-  // y "setNombre" sirve para actualizar ese valor
+export default function OlvidarContrasena() {
   const [nombre, setNombre] = useState('');
+  const [correo, setCorreo] = useState('');
 
-
-  // Función que se ejecuta al presionar el botón
-  const mostrarAlerta = () => {
-
-
-    // Si el cuadro de texto está vacío...
-    if (nombre.trim() === '') {
-
-
-      // Detecta si está corriendo en una página web
-      if (Platform.OS === 'web') {
-        // Muestra alerta normal del navegador
-        window.alert('Error: Por favor ingresa tu nombre');
-      } else {
-        // Muestra alerta en dispositivos móviles (Android/iOS)
-        Alert.alert('Error', 'Por favor ingresa tu nombre');
-      }
-
-
-    } else {
-      // Si sí se escribió un nombre...
-
-
-      if (Platform.OS === 'web') {
-        // Alerta en navegador
-        window.alert(`¡Hola ${nombre}! Bienvenido`);
-      } else {
-        // Alerta en celular
-        Alert.alert('¡Hola!', `¡Bienvenido ${nombre}!`);
-      }
+  const enviar = () => {
+    if (nombre.trim() === '' || correo.trim() === '') {
+      Alert.alert('Campos vacíos', 'Por favor completa todos los campos antes de continuar.');
+      return;
     }
+    Alert.alert('Solicitud enviada', 'Hemos enviado un enlace para restablecer tu contraseña.');
   };
 
-
-  // Todo lo que se ve en pantalla
   return (
     <View style={styles.container}>
-      {/* Título principal */}
-      <Text style={styles.titulo}>Práctica: TextInput & Alert</Text>
+      <Text style={styles.texto}>¿Olvidaste tu contraseña?</Text>
 
-
-      {/* Cuadro de texto para escribir el nombre */}
+      <Text style={styles.texto2}>Ingresa tu nombre</Text>
       <TextInput
-        style={styles.nombres}
-        placeholder="Escribe tu nombre"
-        value={nombre} // muestra el valor actual
-        onChangeText={setNombre} // actualiza el valor al escribir
-        maxLength={50} // máximo de caracteres
+        style={styles.input}
+        placeholder="Nombre"
+        value={nombre}
+        onChangeText={setNombre}
       />
 
-
-      {/* Cuadro de texto para contraseña */}
+      <Text style={styles.texto2}>Ingresa tu correo electrónico</Text>
       <TextInput
-        style={styles.nombres}
-        placeholder="Escribe tu contraseña"
-        secureTextEntry={true} // oculta lo que se escribe (modo contraseña)
-        maxLength={20}
+        style={styles.input}
+        placeholder="Correo electrónico"
+        keyboardType="email-address"
+        value={correo}
+        onChangeText={setCorreo}
       />
 
-
-      {/* Cuadro de texto para comentarios (más grande y con varias líneas) */}
-      <TextInput
-        style={[styles.nombres, { height: 100, textAlignVertical: 'top' }]}
-        placeholder="Escribe un comentario"
-        multiline={true} // permite escribir en varias líneas
-        numberOfLines={4}
-        maxLength={200}
-      />
-
-
-      {/* Botón que ejecuta la función mostrarAlerta */}
-      <Button color="blue" title="Mostrar saludo" onPress={mostrarAlerta} />
+      <TouchableOpacity style={styles.botones} onPress={enviar}>
+        <Text style={styles.textoBoton}>ENVIAR</Text>
+      </TouchableOpacity>
     </View>
   );
-};
+}
 
-
-// Estilos visuales
 const styles = StyleSheet.create({
   container: {
-    flex: 1, // ocupa toda la pantalla
-    justifyContent: 'center', // centra el contenido verticalmente
-    alignItems: 'center', // centra el contenido horizontalmente
-    backgroundColor: '#1ad1edff', // color de fondo
-    padding: 20, // espacio interno
+    flex: 1,
+    backgroundColor: '#009c5bff',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  titulo: {
-    fontSize: 22,
+  input: {
+    borderWidth: 1,
+    borderColor: '#D9D9D9',
+    padding: 10,
+    marginBottom: 10,
+    width: '60%',
+    backgroundColor: '#fff',
+    borderRadius: 10,
+  },
+  texto: {
+    color: '#000000',
+    fontSize: 30,
+    marginBottom: 30,
     fontWeight: 'bold',
-    marginBottom: 15,
   },
-  nombres: {
-    borderWidth: 1, // borde visible
-    borderColor: '#0f0e0eff', // color del borde
-    padding: 10, // espacio dentro del cuadro
-    marginBottom: 20, // espacio debajo
-    width: '80%', // ancho relativo al tamaño de la pantalla
-    borderRadius: 8, // esquinas redondeadas
+  texto2: {
+    color: '#000000',
+    fontSize: 20,
+    marginBottom: 10,
+    fontWeight: 'bold',
+  },
+  botones: {
+    backgroundColor: '#00D162',
+    paddingVertical: 10,
+    paddingHorizontal: 25,
+    borderRadius: 8,
+    marginBottom: 30,
+    marginTop: 10,
+    width: '60%',
+  },
+  textoBoton: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+    textAlign: 'center',
   },
 });
