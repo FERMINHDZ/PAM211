@@ -1,236 +1,193 @@
-import React, { useState } from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  ScrollView,
-  Button,
-  Alert,
-  Dimensions,
-  StatusBar,
-  Platform,
-  Image,
-  ImageBackground,
-} from 'react-native';
+//  Importaciones necesarias
+import {Text, StyleSheet, View, TextInput, Switch, Button, Alert, Platform, ImageBackground, Image, Dimensions } from "react-native"; // Importamos componentes base de React Native
+import React, { useEffect, useState } from "react"; // Importamos React y hooks
 
-// Imagen de fondo y platillos
-const Fondo = require('../assets/restaurante.jpeg');
-const Bruschetta = require('../assets/brusheta.jpeg');
-const Caprese = require('../assets/caprese.jpeg');
-const Salmon = require('../assets/salmon.jpg');
-const Pasta = require('../assets/pasta.jpeg');
-const Limonada = require('../assets/limonada.jpg');
-const TeHelado = require('../assets/te.jpeg');
-const Cheesecake = require('../assets/chessecake.jpeg');
-const Brownie = require('../assets/brownie.jpeg');
+// Imágenes usadas
+const MainBackground = require("../assets/Gaia2.jpg"); // Imagen del fondo principal
+const SplashLogo = require("../assets/I_M.jpg");       // Imagen del splash
 
-export default function RepasoScreen() {
-  const handleOrder = (platillo, precio) => {
-    if (Platform.OS === 'web') {
-      window.alert(`Has ordenado ${platillo} por $${precio}`);
-    } else {
-      Alert.alert(
-        'Confirmar orden',
-        `¿Deseas ordenar "${platillo}" por $${precio}?`,
-        [
-          { text: 'Cancelar', style: 'cancel' },
-          {
-            text: 'Confirmar',
-            onPress: () =>
-              Alert.alert('Orden confirmada', `Has ordenado ${platillo}.`),
-          },
-        ]
-      );
+export default function RepasoScreen() {               // Declaramos el componente principal RepasoScreen
+  // Estados principales
+  const [showSplash, setShowSplash] = useState(true);        // Controla si se muestra el splash
+  const [nombre, setNombre] = useState("");                  // Guarda el nombre ingresado
+  const [correo, setCorreo] = useState("");                  // Guarda el correo ingresado
+  const [aceptaTerminos, setAceptaTerminos] = useState(false); // Guarda el estado del switch
+
+  // Efecto para controlar el splash
+  useEffect(() => {                                          // Efecto que se ejecuta al montar el componente
+    const timer = setTimeout(() => setShowSplash(false), 3000); // Oculta el splash tras 3 segundos
+    return () => clearTimeout(timer);                        // Limpia el temporizador al desmontar el componente
+  }, []);                                                     // [] para que solo se ejecute una vez
+
+  // Mostrar pantalla Splash si showSplash es true
+  if (showSplash) {                                           // Si showSplash es verdadero, muestra el splash
+    return (
+      <ImageBackground
+        source={SplashLogo}                           // Imagen que se muestra de fondo
+        style={styles.splashContainer}                // Estilo del splash centrado
+        resizeMode="cover"                            // Cubre toda la pantalla
+      >
+        <View style={styles.splashOverlay} />          {/* Capa semitransparente encima */}
+        <View style={styles.splashContent}>            {/* Contenedor del logo y texto */}
+          <Image source={SplashLogo} style={styles.splashImage} /> {/* Imagen del logo */}
+          <Text style={styles.splashText}>Cargando...</Text>       {/* Texto mientras carga */}
+        </View>
+      </ImageBackground>
+    );
+  }
+
+  // Función para manejar el registro
+  const manejarRegistro = () => {                             // Función que se ejecuta al presionar el botón "Registrarse"
+    // Verificar si los campos están vacíos
+    if (nombre.trim() === "" || correo.trim() === "") {       // Si el nombre o correo están vacíos
+      const mensaje = "Error: Debes completar todos los campos."; // Mensaje de error
+      Platform.OS === "web"
+        ? window.alert(mensaje)                               // Si está en web, usa window.alert
+        : Alert.alert("Error", mensaje);                      // Si está en móvil, usa Alert.alert
+      return;                                                 // Detiene la ejecución
     }
+
+    // Verificar si se aceptaron los términos
+    if (!aceptaTerminos) {                                    // Si el usuario no activó el switch
+      const mensaje = "Error: Debes aceptar los términos y condiciones."; // Mensaje de error
+      Platform.OS === "web"
+        ? window.alert(mensaje)                               // Alerta en web
+        : Alert.alert("Error", mensaje);                      // Alerta en móvil
+      return;                                                 // Detiene la ejecución
+    }
+
+    // Si todo es correcto, mostrar éxito
+    const mensaje = `Nombre: ${nombre}\nCorreo: ${correo}\nRegistro exitoso.`; // Mensaje con los datos ingresados
+    Platform.OS === "web"
+      ? window.alert(mensaje)                                 // Alerta en web
+      : Alert.alert("Registro exitoso", mensaje);             // Alerta en móvil
+
+    // Reiniciar los campos
+    setNombre("");                                            // Limpia el campo de nombre
+    setCorreo("");                                            // Limpia el campo de correo
+    setAceptaTerminos(false);                                 // Reinicia el switch a false
   };
 
+  // Sección principal del formulario
   return (
-    <ImageBackground source={Fondo} style={styles.background} resizeMode="cover">
-      <View style={styles.overlay}>
-        <StatusBar barStyle="dark-content" />
-        <View style={styles.header}>
-          <Text style={styles.restaurantName}>Restaurante Delicias Gaia</Text>
-          <Text style={styles.restaurantDesc}>
-            Sabores auténticos, ingredientes frescos y atención con el corazón
-          </Text>
+    <ImageBackground
+      source={MainBackground}              // Imagen de fondo principal
+      style={styles.background}            // Estilos del fondo
+      resizeMode="cover"                   // Escala la imagen
+    >
+      <View style={styles.container}>      {/* Contenedor del formulario */}
+        <Text style={styles.title}>Registro de Usuario</Text> {/* Título principal */}
+
+        <TextInput
+          style={styles.input}             // Estilo del campo
+          placeholder="Nombre completo"    // Texto guía
+          value={nombre}                   // Valor actual del nombre
+          onChangeText={setNombre}         // Actualiza estado al escribir
+        />
+
+        <TextInput
+          style={styles.input}             // Estilo igual que el anterior
+          placeholder="Correo electrónico" // Texto guía para correo
+          value={correo}                   // Valor actual del correo
+          onChangeText={setCorreo}         // Actualiza estado al escribir
+          keyboardType="email-address"     // Teclado tipo correo
+          autoCapitalize="none"            // No pone mayúsculas automáticas
+        />
+
+        <View style={styles.switchContainer}> {/* Contenedor del switch */}
+          <Switch
+            value={aceptaTerminos}            // Estado del switch
+            onValueChange={setAceptaTerminos} // Actualiza el estado al cambiar
+          />
+          <Text style={styles.switchLabel}>Aceptar términos y condiciones</Text> {/* Texto junto al switch */}
         </View>
 
-        <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
-          {/* Entradas */}
-          <View style={styles.category}>
-            <Text style={styles.categoryTitle}>Entradas</Text>
+        <Button
+          title="Registrarse"             // Texto del botón
+          onPress={manejarRegistro}       // Llama a la función de registro
+          color="#0066cc"                 // Color azul del botón
+        />
 
-            <View style={styles.card}>
-              <Image source={Bruschetta} style={styles.image} resizeMode="contain" />
-              <Text style={styles.dishName}>Bruschetta Clásica</Text>
-              <Text style={styles.dishDesc}>
-                Pan artesanal con jitomate, albahaca y aceite de oliva extra virgen.
-              </Text>
-              <Text style={styles.price}>$85.00</Text>
-              <Button title="Ordenar" color="#2E8B57" onPress={() => handleOrder('Bruschetta Clásica', 85)} />
-            </View>
-
-            <View style={styles.card}>
-              <Image source={Caprese} style={styles.image} resizeMode="contain" />
-              <Text style={styles.dishName}>Ensalada Caprese</Text>
-              <Text style={styles.dishDesc}>
-                Queso mozzarella, rodajas de tomate fresco y reducción balsámica.
-              </Text>
-              <Text style={styles.price}>$95.00</Text>
-              <Button title="Ordenar" color="#2E8B57" onPress={() => handleOrder('Ensalada Caprese', 95)} />
-            </View>
-          </View>
-
-          {/* Platos principales */}
-          <View style={styles.category}>
-            <Text style={styles.categoryTitle}>Platos Principales</Text>
-
-            <View style={styles.card}>
-              <Image source={Salmon} style={styles.image} resizeMode="contain" />
-              <Text style={styles.dishName}>Salmón a la Parrilla</Text>
-              <Text style={styles.dishDesc}>
-                Filete fresco con salsa de limón y hierbas acompañado de vegetales al vapor.
-              </Text>
-              <Text style={styles.price}>$210.00</Text>
-              <Button title="Ordenar" color="#2E8B57" onPress={() => handleOrder('Salmón a la Parrilla', 210)} />
-            </View>
-
-            <View style={styles.card}>
-              <Image source={Pasta} style={styles.image} resizeMode="contain" />
-              <Text style={styles.dishName}>Pasta Alfredo con Pollo</Text>
-              <Text style={styles.dishDesc}>
-                Pasta cremosa con pollo a la plancha y toque de ajo fresco.
-              </Text>
-              <Text style={styles.price}>$200.00</Text>
-              <Button title="Ordenar" color="#2E8B57" onPress={() => handleOrder('Pasta Alfredo con Pollo', 200)} />
-            </View>
-          </View>
-
-          {/* Bebidas */}
-          <View style={styles.category}>
-            <Text style={styles.categoryTitle}>Bebidas</Text>
-
-            <View style={styles.card}>
-              <Image source={Limonada} style={styles.image} resizeMode="contain" />
-              <Text style={styles.dishName}>Limonada Natural</Text>
-              <Text style={styles.dishDesc}>Refrescante y natural, hecha al momento.</Text>
-              <Text style={styles.price}>$45.00</Text>
-              <Button title="Ordenar" color="#2E8B57" onPress={() => handleOrder('Limonada Natural', 45)} />
-            </View>
-
-            <View style={styles.card}>
-              <Image source={TeHelado} style={styles.image} resizeMode="contain" />
-              <Text style={styles.dishName}>Té Helado</Text>
-              <Text style={styles.dishDesc}>Té negro frío con un toque de limón y menta.</Text>
-              <Text style={styles.price}>$50.00</Text>
-              <Button title="Ordenar" color="#2E8B57" onPress={() => handleOrder('Té Helado', 50)} />
-            </View>
-          </View>
-
-          {/* Postres */}
-          <View style={styles.category}>
-            <Text style={styles.categoryTitle}>Postres</Text>
-
-            <View style={styles.card}>
-              <Image source={Cheesecake} style={styles.image} resizeMode="contain" />
-              <Text style={styles.dishName}>Cheesecake de Vainilla</Text>
-              <Text style={styles.dishDesc}>Suave, cremoso y con base de galleta crocante.</Text>
-              <Text style={styles.price}>$95.00</Text>
-              <Button title="Ordenar" color="#2E8B57" onPress={() => handleOrder('Cheesecake de Vainilla', 95)} />
-            </View>
-
-            <View style={styles.card}>
-              <Image source={Brownie} style={styles.image} resizeMode="contain" />
-              <Text style={styles.dishName}>Brownie con Helado</Text>
-              <Text style={styles.dishDesc}>Brownie tibio acompañado de helado de vainilla.</Text>
-              <Text style={styles.price}>$110.00</Text>
-              <Button title="Ordenar" color="#2E8B57" onPress={() => handleOrder('Brownie con Helado', 110)} />
-            </View>
-          </View>
-
-          <View style={{ height: 60 }} />
-        </ScrollView>
+        <Text style={styles.smallNote}>Usa datos de prueba para ver la alerta.</Text> {/* Nota inferior */}
       </View>
     </ImageBackground>
   );
 }
 
-const { width } = Dimensions.get('window');
+// Estilos
+const { width, height } = Dimensions.get("window"); // Obtiene tamaño de pantalla
 
 const styles = StyleSheet.create({
   background: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
+    flex: 1,                              // Ocupa todo el espacio disponible
+    width,                                // Ancho total de la pantalla
+    height,                               // Alto total de la pantalla
+    justifyContent: "center",             // Centra el contenido verticalmente
+    alignItems: "center",                 // Centra el contenido horizontalmente
   },
-  overlay: {
-    flex: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.92)',
+  splashContainer: {
+    width,                                // Ancho total del splash
+    height,                               // Alto total del splash
+    justifyContent: "center",             // Centra el contenido verticalmente
+    alignItems: "center",                 // Centra el contenido horizontalmente
   },
-  header: {
-    paddingTop: 50,
-    paddingBottom: 18,
-    paddingHorizontal: 18,
-    backgroundColor: '#ffffffcc',
-    borderBottomWidth: 1,
-    borderBottomColor: '#dcdcdc',
-    alignItems: 'center',
+  splashOverlay: {
+    position: "absolute",                 // Capa encima del fondo
+    top: 0,                               // Desde arriba
+    left: 0,                              // Desde la izquierda
+    right: 0,                             // Hasta la derecha
+    bottom: 0,                            // Hasta abajo
+    backgroundColor: "rgba(0,0,0,0.35)",  // Fondo semitransparente oscuro
   },
-  restaurantName: {
-    fontSize: 26,
-    fontWeight: 'bold',
-    color: '#333',
+  splashContent: {
+    justifyContent: "center",             // Centra el logo y texto verticalmente
+    alignItems: "center",                 // Centra horizontalmente
   },
-  restaurantDesc: {
-    fontSize: 14,
-    color: '#555',
-    marginTop: 6,
-    textAlign: 'center',
+  splashImage: {
+    width: 140,                           // Ancho del logo
+    height: 140,                          // Alto del logo
+    borderRadius: 20,                     // Bordes redondeados
+    marginBottom: 12,                     // Espacio debajo del logo
   },
-  scroll: {
-    flex: 1,
+  splashText: {
+    color: "#ff0000",                     // Texto en rojo
+    fontSize: 26,                         // Tamaño del texto
+    fontWeight: "bold",                   // Negrita
   },
-  scrollContent: {
-    padding: 16,
+  container: {
+    backgroundColor: "rgba(255,255,255,0.9)", // Fondo blanco semitransparente
+    padding: 22,                         // Espaciado interno
+    borderRadius: 14,                    // Bordes redondeados
+    alignItems: "center",                // Centra los elementos
+    width: 320,                          // Ancho fijo del formulario
   },
-  category: {
-    marginBottom: 20,
+  title: {
+    fontSize: 22,                        // Tamaño del título
+    fontWeight: "bold",                  // Negrita
+    marginBottom: 16,                    // Espacio debajo
   },
-  categoryTitle: {
-    fontSize: 22,
-    fontWeight: '700',
-    color: '#2E8B57',
-    marginBottom: 10,
-    textDecorationLine: 'underline',
+  input: {
+    width: "100%",                       // Ancho completo del contenedor
+    borderWidth: 1,                      // Borde visible
+    borderColor: "#ccc",                 // Color gris del borde
+    borderRadius: 10,                    // Bordes redondeados
+    padding: 10,                         // Espacio interno
+    marginBottom: 12,                    // Espacio entre inputs
+    backgroundColor: "#fff",             // Fondo blanco
   },
-  card: {
-    backgroundColor: '#ffffff',
-    padding: 12,
-    borderRadius: 10,
-    marginBottom: 14,
-    elevation: 3,
+  switchContainer: {
+    flexDirection: "row",                // Elementos en fila
+    alignItems: "center",                // Centrado vertical
+    marginBottom: 18,                    // Espacio debajo del switch
   },
-  image: {
-    width: '100%',
-    height: 120, 
-    borderRadius: 10,
-    marginBottom: 8,
+  switchLabel: {
+    marginLeft: 10,                      // Espacio entre switch y texto
+    fontSize: 15,                        // Tamaño del texto
+    color: "#000",                       // Color negro
   },
-  dishName: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#181616',
-  },
-  dishDesc: {
-    fontSize: 14,
-    color: '#352e2e',
-    marginVertical: 4,
-  },
-  price: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#28b465',
-    marginBottom: 6,
+  smallNote: {
+    marginTop: 10,                       // Espacio arriba
+    fontSize: 12,                        // Tamaño pequeño
+    color: "#444",                       // Color gris oscuro
   },
 });
-

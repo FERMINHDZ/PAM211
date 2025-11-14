@@ -1,5 +1,5 @@
 // 1. Zona importaciones
-import { Text, StyleSheet, View, TouchableOpacity } from 'react-native';
+import { Text, StyleSheet, View, TouchableOpacity, ScrollView } from 'react-native';
 import React, { useState } from 'react';
 import BotonesScreen from './BotonesScreen';
 import ContadorScreen from './ContadorScreen';
@@ -10,6 +10,7 @@ import ActivityScreen from './ActivityScreen';
 import FlatListScreen from './FlatListScreen';
 import ModalScreen from './ModalScreen';
 import RepasoScreen from './RepasoScreen';
+import Examen2dopScreen from './Examen2dopScreen';
 
 // 2. Zona de main o componentes
 export default function MenuScreen() {
@@ -32,81 +33,94 @@ export default function MenuScreen() {
       return <FlatListScreen />;
     case 'Modal':
       return <ModalScreen />;
+    case 'Examen2dop':
+      return <Examen2dopScreen />;
     case 'Repaso':
       return <RepasoScreen />;
     case 'menu':
     default:
       return (
         <View style={styles.container}>
-          
           <Text style={styles.titulo}>Menú de Prácticas</Text>
 
-          <View style={styles.botonesContainer}>
-            <TouchableOpacity
-              style={[styles.boton, { backgroundColor: '#10ffcfff' }]}
-              onPress={() => setScreen('contador')}
-            >
-              <Text style={styles.textoBoton}>Pract: Contador</Text>
-            </TouchableOpacity>
+          {/* ScrollView agregado aquí */}
+          <ScrollView 
+            style={{ width: '100%' }} 
+            contentContainerStyle={{ alignItems: 'center', paddingBottom: 40 }}
+          >
+            <View style={styles.botonesContainer}>
+              <TouchableOpacity
+                style={[styles.boton, { backgroundColor: '#10ffcfff' }]}
+                onPress={() => setScreen('contador')}
+              >
+                <Text style={styles.textoBoton}>Pract: Contador</Text>
+              </TouchableOpacity>
 
-            <TouchableOpacity
-              style={[styles.boton, { backgroundColor: '#ff189fff' }]}
-              onPress={() => setScreen('botones')}
-            >
-              <Text style={styles.textoBoton}>Pract: Botones</Text>
-            </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.boton, { backgroundColor: '#ff189fff' }]}
+                onPress={() => setScreen('botones')}
+              >
+                <Text style={styles.textoBoton}>Pract: Botones</Text>
+              </TouchableOpacity>
 
-            <TouchableOpacity
-              style={[styles.boton, { backgroundColor: '#006195ff' }]}
-              onPress={() => setScreen('image')}
-            >
-              <Text style={styles.textoBoton}>Pract: ImageBackground</Text>
-            </TouchableOpacity>
-            
-            <TouchableOpacity
-              style={[styles.boton, { backgroundColor: '#0055ffff' }]}
-              onPress={() => setScreen('textimput')}
-            >
-              <Text style={styles.textoBoton}>Pract: TextInput</Text>
-            </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.boton, { backgroundColor: '#006195ff' }]}
+                onPress={() => setScreen('image')}
+              >
+                <Text style={styles.textoBoton}>Pract: ImageBackground</Text>
+              </TouchableOpacity>
 
-            <TouchableOpacity
-              style={[styles.boton, { backgroundColor: '#c11befff' }]}
-              onPress={() => setScreen('scrollview')}
-            >
-              <Text style={styles.textoBoton}>Pract: ScrollView</Text>
-            </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.boton, { backgroundColor: '#0055ffff' }]}
+                onPress={() => setScreen('textimput')}
+              >
+                <Text style={styles.textoBoton}>Pract: TextInput</Text>
+              </TouchableOpacity>
 
-            <TouchableOpacity
-              style={[styles.boton, { backgroundColor: '#ca006cff' }]}
-              onPress={() => setScreen('ActivityIndicator')}
-            >
-              <Text style={styles.textoBoton}>Pract: ActivityIndicator</Text>
-            </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.boton, { backgroundColor: '#c11befff' }]}
+                onPress={() => setScreen('scrollview')}
+              >
+                <Text style={styles.textoBoton}>Pract: ScrollView</Text>
+              </TouchableOpacity>
 
-            <TouchableOpacity
-              style={[styles.boton, { backgroundColor: '#058800ff' }]}
-              onPress={() => setScreen('FlatList')}
-            >
-              <Text style={styles.textoBoton}>Pract: FlatList</Text>
-            </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.boton, { backgroundColor: '#ca006cff' }]}
+                onPress={() => setScreen('ActivityIndicator')}
+              >
+                <Text style={styles.textoBoton}>Pract: ActivityIndicator</Text>
+              </TouchableOpacity>
 
-            <TouchableOpacity
-              style={[styles.boton, { backgroundColor: '#e00202ff' }]}
-              onPress={() => setScreen('Modal')}
-            >
-              <Text style={styles.textoBoton}>Pract: Modal</Text>
-            </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.boton, { backgroundColor: '#058800ff' }]}
+                onPress={() => setScreen('FlatList')}
+              >
+                <Text style={styles.textoBoton}>Pract: FlatList</Text>
+              </TouchableOpacity>
 
-            <TouchableOpacity
-              style={[styles.boton, { backgroundColor: '#ff00d4ff' }]}
-              onPress={() => setScreen('Repaso')}
-            >
-              <Text style={styles.textoBoton}>Repaso 1</Text>
-            </TouchableOpacity>
-            
+              <TouchableOpacity
+                style={[styles.boton, { backgroundColor: '#e00202ff' }]}
+                onPress={() => setScreen('Modal')}
+              >
+                <Text style={styles.textoBoton}>Pract: Modal</Text>
+              </TouchableOpacity>
 
-          </View>
+              <TouchableOpacity
+                style={[styles.boton, { backgroundColor: '#04000382' }]}
+                onPress={() => setScreen('Examen2dop')}
+              >
+                <Text style={styles.textoBoton}>Examen2doP</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.boton, { backgroundColor: '#ff00d4ff' }]}
+                onPress={() => setScreen('Repaso')}
+              >
+                <Text style={styles.textoBoton}>Repaso 1</Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
+          {/* Fin del ScrollView */}
         </View>
       );
   }
@@ -151,5 +165,3 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
-
-
