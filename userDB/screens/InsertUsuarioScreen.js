@@ -1,20 +1,24 @@
 import { useEffect, useState, useCallback } from 'react';
 import { 
   View, Text, TextInput, TouchableOpacity, FlatList,
-  StyleSheet, Alert, ActivityIndicator, Platform 
+  StyleSheet, Alert, ActivityIndicator, Platform,
+  Modal, Keyboard
 } from 'react-native';
 import { UsuarioController } from '../controllers/UsuarioController';
 
 const controller = new UsuarioController();
 
 export default function UsuarioView() {
-
   const [usuarios, setUsuarios] = useState([]);
   const [nombre, setNombre] = useState('');
   const [loading, setLoading] = useState(true);
   const [guardando, setGuardando] = useState(false);
+  const [editando, setEditando] = useState(false);
+  const [eliminar, setEliminar] = useState(false); // ← AGREGADO
+  const [usuarioEditando, setUsuarioEditando] = useState(null);
+  const [nombreEditado, setNombreEditado] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
 
-  // SELECT - Cargar usuarios
   const cargarUsuarios = useCallback(async () => {
     try {
       setLoading(true);
@@ -28,7 +32,6 @@ export default function UsuarioView() {
     }
   }, []);
 
-  // Inicializar
   useEffect(() => {
     const init = async () => {
       await controller.initialize();
@@ -41,10 +44,8 @@ export default function UsuarioView() {
     return () => controller.removeListener(cargarUsuarios);
   }, [cargarUsuarios]);
 
-
-  // INSERT - Agregar Usuario
   const handleAgregar = async () => {
-    if (guardando) return;
+    if (guardando || !nombre.trim()) return;
 
     try {
       setGuardando(true);
@@ -56,6 +57,7 @@ export default function UsuarioView() {
       );
 
       setNombre('');
+      Keyboard.dismiss();
     } catch (error) {
       Alert.alert("Error", error.message);
     } finally {
@@ -63,8 +65,82 @@ export default function UsuarioView() {
     }
   };
 
+  const handleEditar = (usuario) => {
+    setUsuarioEditando(usuario);
+    setNombreEditado(usuario.nombre);
+    setModalVisible(true);
+  };
 
-  // Render de cada usuario
+  const handleConfirmarEdicion = async () => {
+    if (!nombreEditado.trim()) {
+      Alert.alert("Error", "El nombre no puede estar vacío");
+      return;
+    }
+
+    try {
+      setEditando(true);
+      const usuarioActualizado = await controller.actualizarUsuario(
+        usuarioEditando.id, 
+        nombreEditado
+      );
+
+      Alert.alert(
+        "Usuario Actualizado",
+        `Usuario actualizado a: ${usuarioActualizado.nombre}`
+      );
+
+      setModalVisible(false);
+      setUsuarioEditando(null);
+      setNombreEditado('');
+      Keyboard.dismiss();
+    } catch (error) {
+      Alert.alert("Error", error.message);
+    } finally {
+      setEditando(false);
+    }
+  };
+
+  // ← AGREGADO: FUNCIÓN ELIMINAR
+  const handleEliminar = async (id) => {
+    if (eliminar) return;
+
+    if (Platform.OS === "web") {
+      if (confirm("¿Seguro que deseas eliminar este usuario?")) {
+        try {
+          setEliminar(true);
+          await controller.eliminarUsuario(id);
+        } catch (error) {
+          Alert.alert("Error", error.message);
+        } finally {
+          setEliminar(false);
+        }
+      }
+    } else {
+      Alert.alert(
+        "Eliminar Usuario",
+        "¿Seguro que deseas eliminar este usuario?",
+        [
+          { text: "Cancelar", style: "cancel" },
+          {
+            text: "Eliminar",
+            style: "destructive",
+            onPress: async () => {
+              try {
+                setEliminar(true);
+                await controller.eliminarUsuario(id);
+                Alert.alert("Usuario Eliminado", `Usuario con ID: ${id} eliminado`);
+              } catch (error) {
+                Alert.alert("Error", error.message);
+              } finally {
+                setEliminar(false);
+              }
+            }
+          }
+        ]
+      );
+    }
+  };
+
   const renderUsuario = ({ item, index }) => (
     <View style={styles.userItem}>
       <View style={styles.userNumber}>
@@ -74,8 +150,7 @@ export default function UsuarioView() {
       <View style={styles.userInfo}>
         <Text style={styles.userName}>{item.nombre}</Text>
         <Text style={styles.userId}>ID: {item.id}</Text>
-
-        <Text style={styles.userData}>
+        <Text style={styles.userDate}>
           {new Date(item.fechaCreacion).toLocaleDateString('es-MX', {
             year: 'numeric',
             month: 'long',
@@ -83,15 +158,31 @@ export default function UsuarioView() {
           })}
         </Text>
       </View>
+
+      <View style={styles.actionsContainer}>
+        <TouchableOpacity 
+          style={[styles.actionButton, styles.editButton]}
+          onPress={() => handleEditar(item)}
+        >
+          <Text style={styles.actionButtonText}>Editar</Text>
+        </TouchableOpacity>
+
+        {/* ← AGREGADO: BOTÓN ELIMINAR */}
+        <TouchableOpacity
+          style={[styles.actionButton, styles.deleteButton]}
+          onPress={() => handleEliminar(item.id)}
+        >
+          <Text style={styles.actionButtonText}>Eliminar</Text>
+        </TouchableOpacity>
+
+      </View>
     </View>
   );
 
-
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>INSERT & SELECT</Text>
+      <Text style={styles.title}>CRUD USUARIOS</Text>
 
-      {/* Formulario */}
       <View style={styles.formContainer}>
         <Text style={styles.sectionTitle}>Insertar Usuario</Text>
 
@@ -106,7 +197,7 @@ export default function UsuarioView() {
         <TouchableOpacity
           style={[styles.button, guardando && styles.buttonDisabled]}
           onPress={handleAgregar}
-          disabled={guardando}
+          disabled={guardando || !nombre.trim()}
         >
           {guardando ? (
             <ActivityIndicator color="#fff" />
@@ -116,7 +207,6 @@ export default function UsuarioView() {
         </TouchableOpacity>
       </View>
 
-      {/* Lista */}
       <Text style={styles.sectionTitle}>Lista de Usuarios</Text>
 
       {loading ? (
@@ -130,7 +220,6 @@ export default function UsuarioView() {
           renderItem={renderUsuario}
           keyExtractor={item => item.id.toString()}
           style={styles.list}
-          showsVerticalScrollIndicator={false}
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
               <Text style={styles.emptyText}>No hay usuarios registrados</Text>
@@ -138,115 +227,96 @@ export default function UsuarioView() {
           }
         />
       )}
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Editar Usuario</Text>
+            
+            <TextInput
+              style={styles.input}
+              placeholder="Nuevo nombre del usuario"
+              value={nombreEditado}
+              onChangeText={setNombreEditado}
+              autoFocus={true}
+            />
+
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.cancelButton]}
+                onPress={() => setModalVisible(false)}
+              >
+                <Text style={styles.modalButtonText}>Cancelar</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity
+                style={[styles.modalButton, styles.confirmButton]}
+                onPress={handleConfirmarEdicion}
+                disabled={editando}
+              >
+                {editando ? (
+                  <ActivityIndicator color="#fff" />
+                ) : (
+                  <Text style={styles.modalButtonText}>Guardar</Text>
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
 
 
-// ESTILOS
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    paddingHorizontal: 16,
-    paddingTop: Platform.OS === 'ios' ? 60 : 40,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#000',
-    textAlign: 'center',
-    marginBottom: 30,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#000',
-    marginBottom: 15,
-  },
-  formContainer: {
-    marginBottom: 30,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 15,
-    fontSize: 16,
-    backgroundColor: '#f9f9f9',
-  },
-  button: {
-    backgroundColor: '#007AFF',
-    padding: 15,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  buttonDisabled: {
-    backgroundColor: '#ccc',
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  loadingContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingVertical: 40
-  },
-  loadingText: {
-    marginTop: 10,
-    fontSize: 16,
-    color: '#666',
-  },
-  list: {
-    flex: 1,
-  },
+  container: { flex: 1, backgroundColor: '#fff', paddingHorizontal: 16, paddingTop: 40 },
+  title: { fontSize: 24, fontWeight: 'bold', textAlign: 'center', marginBottom: 30 },
+  sectionTitle: { fontSize: 18, fontWeight: '600', marginBottom: 15 },
+  formContainer: { marginBottom: 30 },
+  input: { borderWidth: 1, borderColor: '#ccc', borderRadius: 8, padding: 12, marginBottom: 15 },
+  button: { backgroundColor: '#007AFF', padding: 15, borderRadius: 8, alignItems: 'center' },
+  buttonDisabled: { backgroundColor: '#ccc' },
+  buttonText: { color: '#fff', fontSize: 16, fontWeight: '600' },
   userItem: {
-    flexDirection: 'row',
-    backgroundColor: '#fff',
-    padding: 16,
-    marginBottom: 12,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
+    flexDirection: 'row', backgroundColor: '#fff', padding: 16,
+    marginBottom: 12, borderRadius: 8, borderWidth: 1, borderColor: '#ccc'
   },
   userNumber: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: '#007AFF',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
+    width: 32, height: 32, borderRadius: 16, backgroundColor: '#007AFF',
+    justifyContent: 'center', alignItems: 'center', marginRight: 12
   },
-  userNumberText: {
-    color: '#fff',
-    fontWeight: 'bold',
-  },
-  userInfo: {
-    flex: 1,
-  },
-  userName: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#000',
-  },
-  userId: {
-    fontSize: 14,
-    color: '#666',
-  },
-  userData: {
-    fontSize: 12,
-    color: '#999',
-  },
-  emptyContainer: {
-    padding: 40,
+  userNumberText: { color: '#fff', fontWeight: 'bold' },
+  userInfo: { flex: 1 },
+  actionsContainer: { flexDirection: 'row', gap: 6 },
+  actionButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 6,
+    minWidth: 60,
     alignItems: 'center',
   },
-  emptyText: {
-    fontSize: 16,
-    color: '#666',
+  editButton: { backgroundColor: '#FFA500' },
+  deleteButton: { backgroundColor: '#D11A2A' }, // ← AGREGADO
+  actionButtonText: { color: '#fff', fontSize: 12, fontWeight: '600' },
+  emptyContainer: { padding: 40, alignItems: 'center' },
+  emptyText: { fontSize: 16, color: '#666' },
+  modalContainer: {
+    flex: 1, justifyContent: 'center', alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)'
   },
+  modalContent: {
+    backgroundColor: 'white', borderRadius: 12, padding: 20, width: '80%'
+  },
+  modalTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 15, textAlign: 'center' },
+  modalButtons: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 },
+  modalButton: { flex: 1, padding: 12, borderRadius: 8, alignItems: 'center', marginHorizontal: 5 },
+  cancelButton: { backgroundColor: '#8E8E93' },
+  confirmButton: { backgroundColor: '#007AFF' },
+  modalButtonText: { color: '#fff', fontWeight: '600' },
 });
